@@ -54,6 +54,14 @@ pub struct SelectedEntry {
     pub entry_id: ProjectEntryId,
 }
 
+/// A diagnostic entry in e.g. project panel.
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+pub struct DiagnosticEntry {
+    pub worktree_id: WorktreeId,
+    pub entry_id: ProjectEntryId,
+    pub error_count: u32,
+}
+
 /// A group of selected entries from project panel.
 #[derive(Debug)]
 pub struct DraggedSelection {

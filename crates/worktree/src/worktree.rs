@@ -3229,6 +3229,8 @@ pub struct Entry {
     pub is_private: bool,
     pub char_bag: CharBag,
     pub is_fifo: bool,
+
+    pub error_count: u32,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
@@ -3290,6 +3292,7 @@ impl Entry {
             git_status: None,
             char_bag,
             is_fifo: metadata.is_fifo,
+            error_count: 0,
         }
     }
 
@@ -5239,6 +5242,7 @@ impl<'a> TryFrom<(&'a CharBag, proto::Entry)> for Entry {
             is_symlink: entry.is_symlink,
             char_bag,
             is_fifo: entry.is_fifo,
+            error_count: 0,
         })
     }
 }

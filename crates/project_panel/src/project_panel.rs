@@ -47,7 +47,7 @@ use util::{maybe, ResultExt, TryFutureExt};
 use workspace::{
     dock::{DockPosition, Panel, PanelEvent},
     notifications::{DetachAndPromptErr, NotifyTaskExt},
-    DraggedSelection, OpenInTerminal, SelectedEntry, Workspace,
+    DraggedSelection, OpenInTerminal, SelectedEntry, Workspace, DiagnosticEntry
 };
 use worktree::CreatedEntry;
 
@@ -71,6 +71,7 @@ pub struct ProjectPanel {
     // Currently selected leaf entry (see auto-folding for a definition of that) in a file tree
     selection: Option<SelectedEntry>,
     marked_entries: BTreeSet<SelectedEntry>,
+    diagnostic_errors: BTreeSet<DiagnosticEntry>,
     context_menu: Option<(View<ContextMenu>, Point<Pixels>, Subscription)>,
     edit_state: Option<EditState>,
     filename_editor: View<Editor>,
@@ -200,6 +201,10 @@ pub enum Event {
         entry_id: ProjectEntryId,
     },
     Focus,
+    DiagnosticsUpdate {
+        path: ProjectPath,
+        error_count: u32,
+    }
 }
 
 #[derive(Serialize, Deserialize)]
@@ -288,6 +293,42 @@ impl ProjectPanel {
             })
             .detach();
 
+
+      cx.subscribe(&project, |this, project, event, cx| match event {
+                project::Event::DiskBasedDiagnosticsStarted { .. } => {
+                    cx.notify(); 
+                }
+                project::Event::DiskBasedDiagnosticsFinished { language_server_id } => {
+                    log::debug!("disk based diagnostics finished for server {language_server_id}");
+                }
+                project::Event::DiagnosticsUpdated {
+                    language_server_id,
+                    path,
+                } => {
+                    log::debug!("diagnostics updated for server {language_server_id}, path {path:?}. recording change");
+                
+                let mut error_count: u32 = 0;
+                let result = project.read(cx)
+                    .diagnostic_summaries(false, cx)
+                    .find(|(e,_,_)| e.path == path.path);
+                        
+                if let Some((_, _, summary, )) = result {
+                  error_count = summary.error_count as u32;
+                }
+
+                cx.emit(Event::DiagnosticsUpdate { 
+                    path: path.clone(),
+                    error_count: error_count
+                });
+                
+
+                log::debug!("diagnostics Found {error_count} errors in file {path:?}");
+
+                }
+                _ => {}
+            }).detach();
+
+
             let mut this = Self {
                 project: project.clone(),
                 fs: workspace.app_state().fs.clone(),
@@ -301,6 +342,7 @@ impl ProjectPanel {
                 unfolded_dir_ids: Default::default(),
                 selection: None,
                 marked_entries: Default::default(),
+                diagnostic_errors: Default::default(),
                 edit_state: None,
                 context_menu: None,
                 filename_editor,
@@ -314,9 +356,9 @@ impl ProjectPanel {
                 scrollbar_drag_thumb_offset: Default::default(),
             };
             this.update_visible_entries(None, cx);
-
             this
         });
+
 
         cx.subscribe(&project_panel, {
             let project_panel = project_panel.downgrade();
@@ -397,6 +439,39 @@ impl ProjectPanel {
                         }
                     }
                 }
+               Event::DiagnosticsUpdate { path, error_count } => {
+                log::debug!("Updated diagnostics panel");
+                project_panel.update(cx, |this, _| {
+
+                    for (worktree, entries, _) in this.visible_entries.iter_mut() {
+                        if worktree != &path.worktree_id {
+                            continue;
+                        }
+
+                        let entry_id = entries.iter()
+                            .find(|e| e.path == path.path);
+
+                    if let Some(entry_id) = entry_id {
+                        let diagnostic_to_remove = this.diagnostic_errors.iter().find(|e| e.entry_id == entry_id.id && e.worktree_id == path.worktree_id.clone())
+                            .map(|d| d.clone());
+                        
+                        if let Some(diagnostic) = diagnostic_to_remove {
+                            this.diagnostic_errors.remove(&diagnostic);
+                        }
+
+                        this.diagnostic_errors.insert(DiagnosticEntry {
+                            worktree_id: path.worktree_id.clone(),
+                            entry_id: entry_id.id,
+                            error_count: error_count.clone(),
+                        });
+                    }
+
+
+                    }
+                  
+                              
+                }).ok();
+               }
                 _ => {}
             }
         })
@@ -1831,6 +1906,7 @@ impl ProjectPanel {
                         is_symlink: entry.is_symlink,
                         char_bag: entry.char_bag,
                         is_fifo: entry.is_fifo,
+                        error_count: entry.error_count,
                     });
                 }
                 if expanded_dir_ids.binary_search(&entry.id).is_err()
@@ -2189,7 +2265,11 @@ impl ProjectPanel {
             worktree_id: details.worktree_id,
             entry_id,
         };
+
         let is_marked = self.marked_entries.contains(&selection);
+        let is_error = self.diagnostic_errors.iter()
+            .find(|e| e.entry_id == entry_id && e.worktree_id == details.worktree_id && e.error_count > 0).is_some(); 
+
         let is_active = self
             .selection
             .map_or(false, |selection| selection.entry_id == entry_id);
@@ -2385,10 +2465,17 @@ impl ProjectPanel {
                                         }),
                                     )
                                 } else {
+                                    // TODO: Show errors
                                     this.child(
                                         Label::new(file_name)
                                             .single_line()
-                                            .color(filename_text_color),
+                                            .color(
+                                                if is_error {
+                                                    Color::Error
+                                                } else {
+                                                    filename_text_color
+                                                }
+                                            ),
                                     )
                                 }
                             })
