@@ -455,29 +455,37 @@ pub struct Icon {
     color: Color,
     size: Rems,
     transformation: Transformation,
+    polychrome: bool,
 }
 
 impl Icon {
     pub fn new(icon: IconName) -> Self {
         Self {
             path: icon.path().into(),
-            color: Color::default(),
+            color: Color::Default,
             size: IconSize::default().rems(),
             transformation: Transformation::default(),
+            polychrome: false,
         }
     }
 
     pub fn from_path(path: impl Into<SharedString>) -> Self {
         Self {
             path: path.into(),
-            color: Color::default(),
+            color: Color::Default,
             size: IconSize::default().rems(),
             transformation: Transformation::default(),
+            polychrome: false,
         }
     }
 
     pub fn color(mut self, color: Color) -> Self {
         self.color = color;
+        self
+    }
+
+    pub fn polychrome(mut self, polychrome: bool) -> Self {
+        self.polychrome = polychrome;
         self
     }
 
@@ -502,12 +510,17 @@ impl Icon {
 
 impl RenderOnce for Icon {
     fn render(self, cx: &mut WindowContext) -> impl IntoElement {
-        svg()
+        let mut svg_element = svg()
             .with_transformation(self.transformation)
             .size(self.size)
             .flex_none()
-            .path(self.path)
-            .text_color(self.color.color(cx))
+            .path(self.path);
+
+        if !self.polychrome {
+            svg_element = svg_element.text_color(self.color.color(cx));
+        }
+
+        svg_element
     }
 }
 

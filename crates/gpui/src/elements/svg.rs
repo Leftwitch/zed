@@ -78,7 +78,7 @@ impl Element for Svg {
     {
         self.interactivity
             .paint(global_id, bounds, hitbox.as_ref(), cx, |style, cx| {
-                if let Some((path, color)) = self.path.as_ref().zip(style.text.color) {
+                if let Some(path) = self.path.as_ref() {
                     let transformation = self
                         .transformation
                         .as_ref()
@@ -87,7 +87,7 @@ impl Element for Svg {
                         })
                         .unwrap_or_default();
 
-                    cx.paint_svg(bounds, path.clone(), transformation, color)
+                    cx.paint_svg(bounds, path.clone(), transformation, style.text.color)
                         .log_err();
                 }
             })

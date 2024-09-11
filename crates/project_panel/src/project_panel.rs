@@ -2308,7 +2308,7 @@ impl ProjectPanel {
                         )
                     })
                     .child(if let Some(icon) = &icon {
-                        h_flex().child(Icon::from_path(icon.to_string()).color(filename_text_color))
+                        h_flex().child(Icon::from_path(icon.to_string()).polychrome(true))
                     } else {
                         h_flex()
                             .size(IconSize::default().rems())
