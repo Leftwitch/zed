@@ -94,11 +94,11 @@
     "lua": "lua",
     "m4a": "audio",
     "m4v": "video",
-    "markdown": "document",
-    "md": "document",
+    "markdown": "markdown",
+    "md": "markdown",
     "mdb": "storage",
     "mdf": "storage",
-    "mdx": "document",
+    "mdx": "markdown-mdx",
     "metadata": "code",
     "mjs": "javascript",
     "mka": "audio",
@@ -174,8 +174,8 @@
     "xlsx": "document",
     "xml": "template",
     "xrl": "erlang",
-    "yaml": "settings",
-    "yml": "settings",
+    "yaml": "yaml",
+    "yml": "yaml",
     "yrl": "erlang",
     "zlogin": "terminal",
     "zsh": "terminal",
@@ -227,6 +227,12 @@
     },
     "document": {
       "icon": "icons/file_icons/book.svg"
+    },
+    "markdown": {
+      "icon": "icons/file_icons/markdown.svg"
+    },
+    "markdown-mdx": {
+      "icon": "icons/file_icons/markdown-mdx.svg"
     },
     "elixir": {
       "icon": "icons/file_icons/elixir.svg"
@@ -347,6 +353,9 @@
     },
     "typescript": {
       "icon": "icons/file_icons/typescript.svg"
+    },
+    "yaml": {
+      "icon": "icons/file_icons/yaml.svg"
     },
     "vcs": {
       "icon": "icons/file_icons/git.svg"
