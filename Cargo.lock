@@ -4240,6 +4240,7 @@ dependencies = [
  "ctor",
  "editor",
  "env_logger",
+ "file_icons",
  "futures 0.3.30",
  "fuzzy",
  "gpui",

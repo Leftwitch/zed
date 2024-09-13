@@ -6,6 +6,7 @@ mod open_path_prompt;
 
 use collections::HashMap;
 use editor::{scroll::Autoscroll, Bias, Editor};
+use file_icons::FileIcons;
 use fuzzy::{CharBag, PathMatch, PathMatchCandidate};
 use gpui::{
     actions, rems, Action, AnyElement, AppContext, DismissEvent, EventEmitter, FocusHandle,
@@ -627,63 +628,67 @@ impl FileFinderDelegate {
         path_match: &Match,
         cx: &AppContext,
         ix: usize,
-    ) -> (String, Vec<usize>, String, Vec<usize>) {
-        let (file_name, file_name_positions, full_path, full_path_positions) = match &path_match {
-            Match::History {
-                path: entry_path,
-                panel_match,
-            } => {
-                let worktree_id = entry_path.project.worktree_id;
-                let project_relative_path = &entry_path.project.path;
-                let has_worktree = self
-                    .project
-                    .read(cx)
-                    .worktree_for_id(worktree_id, cx)
-                    .is_some();
+    ) -> (String, Vec<usize>, String, Vec<usize>, Option<SharedString>) {
+        let (file_name, file_name_positions, full_path, full_path_positions, file_icon) =
+            match &path_match {
+                Match::History {
+                    path: entry_path,
+                    panel_match,
+                } => {
+                    let worktree_id = entry_path.project.worktree_id;
+                    let project_relative_path = &entry_path.project.path;
+                    let has_worktree = self
+                        .project
+                        .read(cx)
+                        .worktree_for_id(worktree_id, cx)
+                        .is_some();
 
-                if !has_worktree {
-                    if let Some(absolute_path) = &entry_path.absolute {
-                        return (
-                            absolute_path
-                                .file_name()
-                                .map_or_else(
-                                    || project_relative_path.to_string_lossy(),
-                                    |file_name| file_name.to_string_lossy(),
-                                )
-                                .to_string(),
-                            Vec::new(),
-                            absolute_path.to_string_lossy().to_string(),
-                            Vec::new(),
-                        );
+                    if !has_worktree {
+                        if let Some(absolute_path) = &entry_path.absolute {
+                            return (
+                                absolute_path
+                                    .file_name()
+                                    .map_or_else(
+                                        || project_relative_path.to_string_lossy(),
+                                        |file_name| file_name.to_string_lossy(),
+                                    )
+                                    .to_string(),
+                                Vec::new(),
+                                absolute_path.to_string_lossy().to_string(),
+                                Vec::new(),
+                                FileIcons::get_icon(absolute_path.as_path(), cx),
+                            );
+                        }
                     }
-                }
 
-                let mut path = Arc::clone(project_relative_path);
-                if project_relative_path.as_ref() == Path::new("") {
-                    if let Some(absolute_path) = &entry_path.absolute {
-                        path = Arc::from(absolute_path.as_path());
+                    let mut path = Arc::clone(project_relative_path);
+                    if project_relative_path.as_ref() == Path::new("") {
+                        if let Some(absolute_path) = &entry_path.absolute {
+                            path = Arc::from(absolute_path.as_path());
+                        }
                     }
-                }
 
-                let mut path_match = PathMatch {
-                    score: ix as f64,
-                    positions: Vec::new(),
-                    worktree_id: worktree_id.to_usize(),
-                    path,
-                    is_dir: false, // File finder doesn't support directories
-                    path_prefix: "".into(),
-                    distance_to_relative_ancestor: usize::MAX,
-                };
-                if let Some(found_path_match) = &panel_match {
-                    path_match
-                        .positions
-                        .extend(found_path_match.0.positions.iter())
-                }
+                    let file_icon = FileIcons::get_icon(path.as_ref(), cx);
 
-                self.labels_for_path_match(&path_match)
-            }
-            Match::Search(path_match) => self.labels_for_path_match(&path_match.0),
-        };
+                    let mut path_match = PathMatch {
+                        score: ix as f64,
+                        positions: Vec::new(),
+                        worktree_id: worktree_id.to_usize(),
+                        path,
+                        is_dir: false, // File finder doesn't support directories
+                        path_prefix: "".into(),
+                        distance_to_relative_ancestor: usize::MAX,
+                    };
+                    if let Some(found_path_match) = &panel_match {
+                        path_match
+                            .positions
+                            .extend(found_path_match.0.positions.iter())
+                    }
+
+                    self.labels_for_path_match(&path_match, cx)
+                }
+                Match::Search(path_match) => self.labels_for_path_match(&path_match.0, cx),
+            };
 
         if file_name_positions.is_empty() {
             if let Some(user_home_path) = std::env::var("HOME").ok() {
@@ -695,6 +700,7 @@ impl FileFinderDelegate {
                             file_name_positions,
                             full_path.replace(user_home_path, "~"),
                             full_path_positions,
+                            file_icon,
                         );
                     }
                 }
@@ -706,13 +712,15 @@ impl FileFinderDelegate {
             file_name_positions,
             full_path,
             full_path_positions,
+            file_icon,
         )
     }
 
     fn labels_for_path_match(
         &self,
         path_match: &PathMatch,
-    ) -> (String, Vec<usize>, String, Vec<usize>) {
+        cx: &AppContext,
+    ) -> (String, Vec<usize>, String, Vec<usize>, Option<SharedString>) {
         let path = &path_match.path;
         let path_string = path.to_string_lossy();
         let full_path = [path_match.path_prefix.as_ref(), path_string.as_ref()].join("");
@@ -737,7 +745,13 @@ impl FileFinderDelegate {
         let full_path = full_path.trim_end_matches(&file_name).to_string();
         path_positions.retain(|idx| *idx < full_path.len());
 
-        (file_name, file_name_positions, full_path, path_positions)
+        (
+            file_name,
+            file_name_positions,
+            full_path,
+            path_positions,
+            FileIcons::get_icon(path, cx),
+        )
     }
 
     fn lookup_absolute_path(
@@ -1056,7 +1070,7 @@ impl PickerDelegate for FileFinderDelegate {
                 .size(IconSize::Small.rems())
                 .into_any_element(),
         };
-        let (file_name, file_name_positions, full_path, full_path_positions) =
+        let (file_name, file_name_positions, full_path, full_path_positions, file_icon) =
             self.labels_for_match(path_match, cx, ix);
 
         Some(
@@ -1069,6 +1083,17 @@ impl PickerDelegate for FileFinderDelegate {
                     h_flex()
                         .gap_2()
                         .py_px()
+                        .child(if let Some(file_icon) = file_icon {
+                            h_flex().child(
+                                Icon::from_path(file_icon)
+                                    .color(IconColor::Monochrome(Color::Muted)),
+                            )
+                        } else {
+                            h_flex()
+                                .size(IconSize::default().rems())
+                                .invisible()
+                                .flex_none()
+                        })
                         .child(HighlightedLabel::new(file_name, file_name_positions))
                         .child(
                             HighlightedLabel::new(full_path, full_path_positions)
