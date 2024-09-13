@@ -668,8 +668,6 @@ impl FileFinderDelegate {
                         }
                     }
 
-                    let file_icon = FileIcons::get_icon(path.as_ref(), cx);
-
                     let mut path_match = PathMatch {
                         score: ix as f64,
                         positions: Vec::new(),
@@ -1084,10 +1082,7 @@ impl PickerDelegate for FileFinderDelegate {
                         .gap_2()
                         .py_px()
                         .child(if let Some(file_icon) = file_icon {
-                            h_flex().child(
-                                Icon::from_path(file_icon)
-                                    .color(IconColor::Monochrome(Color::Muted)),
-                            )
+                            h_flex().child(Icon::from_path(file_icon).color(IconColor::Polychrome))
                         } else {
                             h_flex()
                                 .size(IconSize::default().rems())
