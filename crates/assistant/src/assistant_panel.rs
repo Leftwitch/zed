@@ -70,13 +70,13 @@ use std::{
     time::Duration,
 };
 use terminal_view::{terminal_panel::TerminalPanel, TerminalView};
-use ui::TintColor;
 use ui::{
     prelude::*,
     utils::{format_distance_from_now, DateTimeType},
     Avatar, AvatarShape, ButtonLike, ContextMenu, Disclosure, ElevationIndex, KeyBinding, ListItem,
     ListItemSpacing, PopoverMenu, PopoverMenuHandle, Tooltip,
 };
+use ui::{IconColor, TintColor};
 use util::{maybe, ResultExt};
 use workspace::{
     dock::{DockPosition, Panel, PanelEvent},
@@ -2961,7 +2961,7 @@ impl ContextEditor {
                                             .child(
                                                 Icon::new(IconName::DatabaseZap)
                                                     .size(IconSize::XSmall)
-                                                    .color(Color::Hint),
+                                                    .color(IconColor::Monochrome(Color::Hint)),
                                             )
                                             .tooltip(|cx| {
                                                 Tooltip::with_meta(
@@ -2978,7 +2978,7 @@ impl ContextEditor {
                                             .child(
                                                 Icon::new(IconName::Ellipsis)
                                                     .size(IconSize::XSmall)
-                                                    .color(Color::Hint),
+                                                    .color(IconColor::Monochrome(Color::Hint)),
                                             )
                                             .into_any_element(),
                                     ),
@@ -3018,7 +3018,10 @@ impl ContextEditor {
                                 ),
                                 MessageStatus::Canceled => Some(
                                     ButtonLike::new("canceled")
-                                        .child(Icon::new(IconName::XCircle).color(Color::Disabled))
+                                        .child(
+                                            Icon::new(IconName::XCircle)
+                                                .color(IconColor::Monochrome(Color::Disabled)),
+                                        )
                                         .child(
                                             Label::new("Canceled")
                                                 .size(LabelSize::Small)
@@ -3720,7 +3723,7 @@ impl ContextEditor {
                 .child(
                     Icon::new(IconName::Check)
                         .size(IconSize::Small)
-                        .color(Color::Created),
+                        .color(IconColor::Monochrome(Color::Created)),
                 )
         } else {
             div().child(step_label)
@@ -4069,7 +4072,10 @@ impl ContextEditor {
                     .child(
                         h_flex()
                             .gap_3()
-                            .child(Icon::new(IconName::ZedAssistant).color(Color::Accent))
+                            .child(
+                                Icon::new(IconName::ZedAssistant)
+                                    .color(IconColor::Monochrome(Color::Accent)),
+                            )
                             .child(Label::new("Zed AI is here! Get started by signing in →")),
                     )
                     .child(
@@ -4112,7 +4118,7 @@ impl ContextEditor {
                             .child(
                                 Icon::new(IconName::ExclamationTriangle)
                                     .size(IconSize::Small)
-                                    .color(Color::Warning),
+                                    .color(IconColor::Monochrome(Color::Warning)),
                             )
                             .child(Label::new(label)),
                     )
@@ -4308,7 +4314,10 @@ impl Render for ContextEditor {
                                     h_flex()
                                         .gap_1p5()
                                         .items_center()
-                                        .child(Icon::new(IconName::XCircle).color(Color::Error))
+                                        .child(
+                                            Icon::new(IconName::XCircle)
+                                                .color(IconColor::Monochrome(Color::Error)),
+                                        )
                                         .child(
                                             Label::new("Error interacting with language model")
                                                 .weight(FontWeight::MEDIUM),
@@ -4742,7 +4751,7 @@ impl Render for ContextEditorToolbarItem {
                                                 .gap_1()
                                                 .child(
                                                     Icon::new(model.icon().unwrap_or_else(|| provider.icon()))
-                                                        .color(Color::Muted)
+                                                        .color(IconColor::Monochrome(Color::Muted))
                                                         .size(IconSize::XSmall),
                                                 )
                                                 .child(
@@ -4759,7 +4768,7 @@ impl Render for ContextEditorToolbarItem {
                                 )
                                 .child(
                                     Icon::new(IconName::ChevronDown)
-                                        .color(Color::Muted)
+                                        .color(IconColor::Monochrome(Color::Muted))
                                         .size(IconSize::XSmall),
                                 ),
                         )
@@ -5327,7 +5336,7 @@ fn render_docs_slash_command_trailer(
                 .child(
                     Icon::new(IconName::ExclamationTriangle)
                         .size(IconSize::Small)
-                        .color(Color::Warning),
+                        .color(IconColor::Monochrome(Color::Warning)),
                 )
                 .tooltip(move |cx| Tooltip::text(format!("Failed to index: {latest_error}"), cx))
                 .into_any_element(),

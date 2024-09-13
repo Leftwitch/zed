@@ -443,7 +443,13 @@ impl AtlasKey {
                     AtlasTextureKind::Monochrome
                 }
             }
-            AtlasKey::Svg(_) => AtlasTextureKind::Monochrome,
+            AtlasKey::Svg(params) => {
+                if params.polychrome {
+                    AtlasTextureKind::Polychrome
+                } else {
+                    AtlasTextureKind::Monochrome
+                }
+            }
             AtlasKey::Image(_) => AtlasTextureKind::Polychrome,
         }
     }

@@ -22,13 +22,13 @@ impl Render for ListItemStory {
                     .start_slot(
                         Icon::new(IconName::Bell)
                             .size(IconSize::Small)
-                            .color(Color::Muted),
+                            .color(crate::IconColor::Monochrome(Color::Muted)),
                     )
                     .child("Hello, world!")
                     .end_slot(
                         Icon::new(IconName::Bell)
                             .size(IconSize::Small)
-                            .color(Color::Muted),
+                            .color(crate::IconColor::Monochrome(Color::Muted)),
                     ),
             )
             .child(Story::label("With start slot icon"))
@@ -38,7 +38,7 @@ impl Render for ListItemStory {
                     .start_slot(
                         Icon::new(IconName::Bell)
                             .size(IconSize::Small)
-                            .color(Color::Muted),
+                            .color(crate::IconColor::Monochrome(Color::Muted)),
                     ),
             )
             .child(Story::label("With start slot avatar"))

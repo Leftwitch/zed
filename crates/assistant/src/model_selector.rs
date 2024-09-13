@@ -4,6 +4,7 @@ use gpui::DismissEvent;
 
 use language_model::{LanguageModel, LanguageModelAvailability, LanguageModelRegistry};
 use proto::Plan;
+use ui::IconColor;
 use workspace::ShowConfiguration;
 
 use std::sync::Arc;
@@ -160,7 +161,7 @@ impl PickerDelegate for ModelPickerDelegate {
                 .start_slot(
                     div().pr_1().child(
                         Icon::new(model_info.icon)
-                            .color(Color::Muted)
+                            .color(IconColor::Monochrome(Color::Muted))
                             .size(IconSize::Medium),
                     ),
                 )
@@ -195,7 +196,7 @@ impl PickerDelegate for ModelPickerDelegate {
                 .end_slot(div().when(model_info.is_selected, |this| {
                     this.child(
                         Icon::new(IconName::Check)
-                            .color(Color::Accent)
+                            .color(IconColor::Monochrome(Color::Accent))
                             .size(IconSize::Small),
                     )
                 })),

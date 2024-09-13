@@ -4,7 +4,9 @@ use gpui::{
     ViewContext, WeakView,
 };
 use language::Diagnostic;
-use ui::{h_flex, prelude::*, Button, ButtonLike, Color, Icon, IconName, Label, Tooltip};
+use ui::{
+    h_flex, prelude::*, Button, ButtonLike, Color, Icon, IconColor, IconName, Label, Tooltip,
+};
 use workspace::{item::ItemHandle, StatusItemView, ToolbarItemEvent, Workspace};
 
 use crate::{Deploy, ProjectDiagnosticsEditor};
@@ -24,7 +26,7 @@ impl Render for DiagnosticIndicator {
                 this.child(
                     Icon::new(IconName::Check)
                         .size(IconSize::Small)
-                        .color(Color::Default),
+                        .color(IconColor::Monochrome(Color::Default)),
                 )
             }),
             (0, warning_count) => h_flex()
@@ -32,7 +34,7 @@ impl Render for DiagnosticIndicator {
                 .child(
                     Icon::new(IconName::ExclamationTriangle)
                         .size(IconSize::Small)
-                        .color(Color::Warning),
+                        .color(IconColor::Monochrome(Color::Warning)),
                 )
                 .child(Label::new(warning_count.to_string()).size(LabelSize::Small)),
             (error_count, 0) => h_flex()
@@ -40,7 +42,7 @@ impl Render for DiagnosticIndicator {
                 .child(
                     Icon::new(IconName::XCircle)
                         .size(IconSize::Small)
-                        .color(Color::Error),
+                        .color(IconColor::Monochrome(Color::Error)),
                 )
                 .child(Label::new(error_count.to_string()).size(LabelSize::Small)),
             (error_count, warning_count) => h_flex()
@@ -48,13 +50,13 @@ impl Render for DiagnosticIndicator {
                 .child(
                     Icon::new(IconName::XCircle)
                         .size(IconSize::Small)
-                        .color(Color::Error),
+                        .color(IconColor::Monochrome(Color::Error)),
                 )
                 .child(Label::new(error_count.to_string()).size(LabelSize::Small))
                 .child(
                     Icon::new(IconName::ExclamationTriangle)
                         .size(IconSize::Small)
-                        .color(Color::Warning),
+                        .color(IconColor::Monochrome(Color::Warning)),
                 )
                 .child(Label::new(warning_count.to_string()).size(LabelSize::Small)),
         };

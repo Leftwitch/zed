@@ -54,6 +54,14 @@ pub struct SelectedEntry {
     pub entry_id: ProjectEntryId,
 }
 
+/// A diagnostic entry in e.g. project panel.
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+pub struct DiagnosticEntry {
+    pub worktree_id: WorktreeId,
+    pub entry_id: ProjectEntryId,
+    pub error_count: u32,
+}
+
 /// A group of selected entries from project panel.
 #[derive(Debug)]
 pub struct DraggedSelection {
@@ -1962,7 +1970,10 @@ impl Pane {
             .child(
                 h_flex()
                     .gap_1()
-                    .children(icon.map(|icon| icon.size(IconSize::Small).color(icon_color)))
+                    .children(icon.map(|icon| {
+                        icon.size(IconSize::Small)
+                            .color(ui::IconColor::Monochrome(icon_color))
+                    }))
                     .child(label),
             );
 

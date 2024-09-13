@@ -49,7 +49,7 @@ use workspace::{
     searchable::{SearchEvent, SearchableItem},
     ui::{
         h_flex, v_flex, ActiveTheme, ButtonCommon, Clickable, Color, ContextMenu, FluentBuilder,
-        HighlightedLabel, Icon, IconButton, IconButtonShape, IconName, IconSize, Label,
+        HighlightedLabel, Icon, IconButton, IconButtonShape, IconColor, IconName, IconSize, Label,
         LabelCommon, ListItem, Selectable, Spacing, StyledExt, StyledTypography, Tooltip,
     },
     OpenInTerminal, WeakItemHandle, Workspace,
@@ -1586,8 +1586,11 @@ impl OutlinePanel {
             .contains(&CollapsedEntry::Excerpt(buffer_id, excerpt_id));
         let color = entry_git_aware_label_color(None, false, is_active);
         let icon = if has_outlines {
-            FileIcons::get_chevron_icon(is_expanded, cx)
-                .map(|icon_path| Icon::from_path(icon_path).color(color).into_any_element())
+            FileIcons::get_chevron_icon(is_expanded, cx).map(|icon_path| {
+                Icon::from_path(icon_path)
+                    .color(IconColor::Monochrome(color))
+                    .into_any_element()
+            })
         } else {
             None
         }
@@ -1688,8 +1691,11 @@ impl OutlinePanel {
                 let color =
                     entry_git_aware_label_color(entry.git_status, entry.is_ignored, is_active);
                 let icon = if settings.file_icons {
-                    FileIcons::get_icon(&entry.path, cx)
-                        .map(|icon_path| Icon::from_path(icon_path).color(color).into_any_element())
+                    FileIcons::get_icon(&entry.path, cx).map(|icon_path| {
+                        Icon::from_path(icon_path)
+                            .color(IconColor::Monochrome(color))
+                            .into_any_element()
+                    })
                 } else {
                     None
                 };
@@ -1720,7 +1726,7 @@ impl OutlinePanel {
                     FileIcons::get_chevron_icon(is_expanded, cx)
                 }
                 .map(Icon::from_path)
-                .map(|icon| icon.color(color).into_any_element());
+                .map(|icon| icon.color(IconColor::Monochrome(color)).into_any_element());
                 (
                     ElementId::from(entry.id.to_proto() as usize),
                     HighlightedLabel::new(
@@ -1746,7 +1752,9 @@ impl OutlinePanel {
                                 None
                             }
                             .map(Icon::from_path)
-                            .map(|icon| icon.color(color).into_any_element());
+                            .map(|icon| {
+                                icon.color(IconColor::Monochrome(color)).into_any_element()
+                            });
                             (icon, file_name(path.as_ref()))
                         }
                         None => (None, "Untitled".to_string()),
@@ -1811,7 +1819,7 @@ impl OutlinePanel {
                 FileIcons::get_chevron_icon(is_expanded, cx)
             }
             .map(Icon::from_path)
-            .map(|icon| icon.color(color).into_any_element());
+            .map(|icon| icon.color(IconColor::Monochrome(color)).into_any_element());
             (
                 ElementId::from(
                     dir_entries

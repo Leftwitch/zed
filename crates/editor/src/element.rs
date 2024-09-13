@@ -68,8 +68,8 @@ use std::{
 };
 use sum_tree::Bias;
 use theme::{ActiveTheme, PlayerColor};
-use ui::prelude::*;
 use ui::{h_flex, ButtonLike, ButtonStyle, ContextMenu, Tooltip};
+use ui::{prelude::*, IconColor};
 use util::RangeExt;
 use util::ResultExt;
 use workspace::{item::Item, Workspace};
@@ -4191,7 +4191,7 @@ fn render_inline_blame_entry(
         .font_family(style.text.font().family)
         .text_color(cx.theme().status().hint)
         .line_height(style.text.line_height)
-        .child(Icon::new(IconName::FileGit).color(Color::Hint))
+        .child(Icon::new(IconName::FileGit).color(IconColor::Monochrome(Color::Hint)))
         .child(text)
         .gap_2()
         .hoverable_tooltip(move |_| tooltip.clone().into())

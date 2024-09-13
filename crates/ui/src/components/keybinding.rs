@@ -1,6 +1,8 @@
 use crate::{h_flex, prelude::*, Icon, IconName, IconSize};
 use gpui::{relative, Action, FocusHandle, IntoElement, Keystroke};
 
+use super::IconColor;
+
 #[derive(IntoElement, Clone)]
 pub struct KeyBinding {
     /// A keybinding consists of a key and a set of modifier keys.
@@ -183,7 +185,7 @@ impl RenderOnce for KeyIcon {
     fn render(self, _cx: &mut WindowContext) -> impl IntoElement {
         Icon::new(self.icon)
             .size(IconSize::Small)
-            .color(Color::Muted)
+            .color(IconColor::Monochrome(Color::Muted))
     }
 }
 

@@ -27,8 +27,8 @@ use std::{
     sync::Arc,
 };
 use ui::{
-    prelude::*, tooltip_container, ButtonLike, IconWithIndicator, Indicator, KeyBinding, ListItem,
-    ListItemSpacing, Tooltip,
+    prelude::*, tooltip_container, ButtonLike, IconColor, IconWithIndicator, Indicator, KeyBinding,
+    ListItem, ListItemSpacing, Tooltip,
 };
 use util::{paths::PathExt, ResultExt};
 use workspace::{
@@ -466,7 +466,8 @@ impl PickerDelegate for RecentProjectsDelegate {
                                     _ => unreachable!(),
                                 };
                                 IconWithIndicator::new(
-                                    Icon::new(IconName::Server).color(Color::Muted),
+                                    Icon::new(IconName::Server)
+                                        .color(IconColor::Monochrome(indicator_color)),
                                     Some(Indicator::dot()),
                                 )
                                 .indicator_color(indicator_color)
@@ -478,7 +479,7 @@ impl PickerDelegate for RecentProjectsDelegate {
                                 .into_any_element()
                             } else {
                                 Icon::new(IconName::Screen)
-                                    .color(Color::Muted)
+                                    .color(IconColor::Monochrome(Color::Muted))
                                     .into_any_element()
                             })
                         })

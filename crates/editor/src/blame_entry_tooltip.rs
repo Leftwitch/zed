@@ -9,7 +9,7 @@ use settings::Settings;
 use std::hash::Hash;
 use theme::ThemeSettings;
 use time::UtcOffset;
-use ui::{prelude::*, tooltip_container, Avatar, Divider, IconButtonShape};
+use ui::{prelude::*, tooltip_container, Avatar, Divider, IconButtonShape, IconColor};
 use workspace::Workspace;
 
 use crate::git::blame::{CommitDetails, GitRemote};
@@ -38,7 +38,7 @@ impl<'a> CommitAvatar<'a> {
         let element = match cx.use_asset::<CommitAvatarAsset>(&avatar_url) {
             // Loading or no avatar found
             None | Some(None) => Icon::new(IconName::Person)
-                .color(Color::Muted)
+                .color(IconColor::Monochrome(Color::Muted))
                 .into_element()
                 .into_any(),
             // Found

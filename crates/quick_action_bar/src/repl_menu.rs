@@ -6,8 +6,8 @@ use repl::{
     SessionSupport,
 };
 use ui::{
-    prelude::*, ButtonLike, ContextMenu, IconWithIndicator, Indicator, IntoElement, PopoverMenu,
-    Tooltip,
+    prelude::*, ButtonLike, ContextMenu, IconColor, IconWithIndicator, Indicator, IntoElement,
+    PopoverMenu, Tooltip,
 };
 
 use gpui::ElementId;
@@ -213,7 +213,7 @@ impl QuickActionBar {
                     .child(
                         Icon::new(IconName::ChevronDownSmall)
                             .size(IconSize::XSmall)
-                            .color(Color::Muted),
+                            .color(IconColor::Monochrome(Color::Muted)),
                     )
                     .tooltip(move |cx| Tooltip::text("REPL Menu", cx))
                     .width(rems(1.).into())
@@ -223,7 +223,7 @@ impl QuickActionBar {
         let button = ButtonLike::new_rounded_left("toggle_repl_icon")
             .child(if menu_state.icon_is_animating {
                 Icon::new(menu_state.icon)
-                    .color(menu_state.icon_color)
+                    .color(IconColor::Monochrome(menu_state.icon_color))
                     .with_animation(
                         "arrow-circle",
                         Animation::new(Duration::from_secs(5)).repeat(),
@@ -232,7 +232,8 @@ impl QuickActionBar {
                     .into_any_element()
             } else {
                 IconWithIndicator::new(
-                    Icon::new(IconName::ReplNeutral).color(menu_state.icon_color),
+                    Icon::new(IconName::ReplNeutral)
+                        .color(IconColor::Monochrome(menu_state.icon_color)),
                     menu_state.indicator,
                 )
                 .indicator_border_color(Some(cx.theme().colors().toolbar_background))

@@ -12,8 +12,8 @@ use project::{Project, TaskSourceKind};
 use task::{ResolvedTask, TaskContext, TaskId, TaskTemplate};
 use ui::{
     div, h_flex, v_flex, ActiveTheme, Button, ButtonCommon, ButtonSize, Clickable, Color,
-    FluentBuilder as _, Icon, IconButton, IconButtonShape, IconName, IconSize, IntoElement,
-    KeyBinding, LabelSize, ListItem, ListItemSpacing, RenderOnce, Selectable, Tooltip,
+    FluentBuilder as _, Icon, IconButton, IconButtonShape, IconColor, IconName, IconSize,
+    IntoElement, KeyBinding, LabelSize, ListItem, ListItemSpacing, RenderOnce, Selectable, Tooltip,
     WindowContext,
 };
 use util::ResultExt;
@@ -391,11 +391,14 @@ impl PickerDelegate for TasksModalDelegate {
                 .get_type_icon(&name.to_lowercase())
                 .map(Icon::from_path),
         }
-        .map(|icon| icon.color(Color::Muted).size(IconSize::Small));
+        .map(|icon| {
+            icon.color(IconColor::Monochrome(Color::Muted))
+                .size(IconSize::Small)
+        });
         let history_run_icon = if Some(ix) <= self.divider_index {
             Some(
                 Icon::new(IconName::HistoryRerun)
-                    .color(Color::Muted)
+                    .color(IconColor::Monochrome(Color::Muted))
                     .size(IconSize::Small)
                     .into_any_element(),
             )

@@ -1,6 +1,6 @@
 use gpui::AnyView;
 
-use crate::prelude::*;
+use crate::{prelude::*, IconColor};
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
 pub enum AudioStatus {
@@ -55,7 +55,7 @@ impl RenderOnce for AvatarAudioStatusIndicator {
                             AudioStatus::Deafened => IconName::AudioOff,
                         })
                         .size(icon_size)
-                        .color(Color::Error),
+                        .color(IconColor::Monochrome(Color::Error)),
                     )
                     .when_some(self.tooltip, |this, tooltip| {
                         this.tooltip(move |cx| tooltip(cx))

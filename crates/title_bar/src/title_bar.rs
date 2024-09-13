@@ -24,8 +24,8 @@ use smallvec::SmallVec;
 use std::sync::Arc;
 use theme::ActiveTheme;
 use ui::{
-    h_flex, prelude::*, Avatar, Button, ButtonLike, ButtonStyle, ContextMenu, Icon, IconName,
-    Indicator, PopoverMenu, Tooltip,
+    h_flex, prelude::*, Avatar, Button, ButtonLike, ButtonStyle, ContextMenu, Icon, IconColor,
+    IconName, Indicator, PopoverMenu, Tooltip,
 };
 use util::ResultExt;
 use vcs_menu::{BranchList, OpenRecent as ToggleVcsMenu};
@@ -546,7 +546,7 @@ impl TitleBar {
                                 .child(
                                     Icon::new(IconName::ChevronDown)
                                         .size(IconSize::Small)
-                                        .color(Color::Muted),
+                                        .color(IconColor::Monochrome(Color::Muted)),
                                 ),
                         )
                         .style(ButtonStyle::Subtle)
@@ -570,7 +570,7 @@ impl TitleBar {
                             h_flex().gap_0p5().child(
                                 Icon::new(IconName::ChevronDown)
                                     .size(IconSize::Small)
-                                    .color(Color::Muted),
+                                    .color(IconColor::Monochrome(Color::Muted)),
                             ),
                         )
                         .style(ButtonStyle::Subtle)

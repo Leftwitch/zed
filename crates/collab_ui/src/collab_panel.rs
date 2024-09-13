@@ -31,8 +31,8 @@ use std::{mem, sync::Arc};
 use theme::{ActiveTheme, ThemeSettings};
 use ui::{
     prelude::*, tooltip_container, Avatar, AvatarAvailabilityIndicator, Button, Color, ContextMenu,
-    Facepile, Icon, IconButton, IconName, IconSize, Indicator, Label, ListHeader, ListItem,
-    Tooltip,
+    Facepile, Icon, IconButton, IconColor, IconName, IconSize, Indicator, Label, ListHeader,
+    ListItem, Tooltip,
 };
 use util::{maybe, ResultExt, TryFutureExt};
 use workspace::{
@@ -2490,7 +2490,7 @@ impl CollabPanel {
             .start_slot(
                 Icon::new(IconName::Hash)
                     .size(IconSize::Small)
-                    .color(Color::Muted),
+                    .color(IconColor::Monochrome(Color::Muted)),
             )
     }
 
@@ -2630,7 +2630,7 @@ impl CollabPanel {
                                     IconName::Hash
                                 })
                                 .size(IconSize::Small)
-                                .color(Color::Muted),
+                                .color(IconColor::Monochrome(Color::Muted)),
                             )
                             .children(has_notes_notification.then(|| {
                                 div()
@@ -2710,7 +2710,7 @@ impl CollabPanel {
             .start_slot(
                 Icon::new(IconName::Hash)
                     .size(IconSize::Small)
-                    .color(Color::Muted),
+                    .color(IconColor::Monochrome(Color::Muted)),
             );
 
         if let Some(pending_name) = self
@@ -2982,7 +2982,7 @@ impl Render for DraggedChannelView {
                     },
                 )
                 .size(IconSize::Small)
-                .color(Color::Muted),
+                .color(IconColor::Monochrome(Color::Muted)),
             )
             .child(Label::new(self.channel.name.clone()))
     }

@@ -39,7 +39,7 @@ use std::{
 };
 use theme::ActiveTheme;
 pub use toolbar_controls::ToolbarControls;
-use ui::{h_flex, prelude::*, Icon, IconName, Label};
+use ui::{h_flex, prelude::*, Icon, IconColor, IconName, Label};
 use util::ResultExt;
 use workspace::{
     item::{BreadcrumbText, Item, ItemEvent, ItemHandle, TabContentParams},
@@ -656,7 +656,10 @@ impl Item for ProjectDiagnosticsEditor {
                     then.child(
                         h_flex()
                             .gap_1()
-                            .child(Icon::new(IconName::XCircle).color(Color::Error))
+                            .child(
+                                Icon::new(IconName::XCircle)
+                                    .color(ui::IconColor::Monochrome(Color::Error)),
+                            )
                             .child(
                                 Label::new(self.summary.error_count.to_string())
                                     .color(params.text_color()),
@@ -667,7 +670,10 @@ impl Item for ProjectDiagnosticsEditor {
                     then.child(
                         h_flex()
                             .gap_1()
-                            .child(Icon::new(IconName::ExclamationTriangle).color(Color::Warning))
+                            .child(
+                                Icon::new(IconName::ExclamationTriangle)
+                                    .color(IconColor::Monochrome(Color::Warning)),
+                            )
                             .child(
                                 Label::new(self.summary.warning_count.to_string())
                                     .color(params.text_color()),

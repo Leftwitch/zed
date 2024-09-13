@@ -42,7 +42,7 @@ use gpui::{
 };
 use language::Buffer;
 use runtimelib::{ExecutionState, JupyterMessageContent, MimeBundle, MimeType};
-use ui::{div, prelude::*, v_flex, IntoElement, Styled, Tooltip, ViewContext};
+use ui::{div, prelude::*, v_flex, IconColor, IntoElement, Styled, Tooltip, ViewContext};
 
 mod image;
 use image::ImageView;
@@ -457,7 +457,7 @@ impl Render for ExecutionView {
                 .child(
                     Icon::new(IconName::ArrowCircle)
                         .size(IconSize::Small)
-                        .color(Color::Muted)
+                        .color(IconColor::Monochrome(Color::Muted))
                         .with_animation(
                             "arrow-circle",
                             Animation::new(Duration::from_secs(3)).repeat(),

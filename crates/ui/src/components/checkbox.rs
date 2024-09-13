@@ -7,6 +7,8 @@ use gpui::{div, prelude::*, ElementId, IntoElement, Styled, WindowContext};
 use crate::prelude::*;
 use crate::{Color, Icon, IconName, Selection};
 
+use super::IconColor;
+
 /// # Checkbox
 ///
 /// Checkboxes are used for multiple choices, not for mutually exclusive choices.
@@ -47,20 +49,20 @@ impl RenderOnce for Checkbox {
 
         let icon = match self.checked {
             Selection::Selected => Some(Icon::new(IconName::Check).size(IconSize::Small).color(
-                if self.disabled {
+                IconColor::Monochrome(if self.disabled {
                     Color::Disabled
                 } else {
                     Color::Selected
-                },
+                }),
             )),
             Selection::Indeterminate => Some(
                 Icon::new(IconName::Dash)
                     .size(IconSize::Small)
-                    .color(if self.disabled {
+                    .color(IconColor::Monochrome(if self.disabled {
                         Color::Disabled
                     } else {
                         Color::Selected
-                    }),
+                    })),
             ),
             Selection::Unselected => None,
         };

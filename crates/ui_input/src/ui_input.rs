@@ -178,7 +178,9 @@ impl Render for TextField {
                                 .gap_1()
                                 .when_some(self.start_icon, |this, icon| {
                                     this.child(
-                                        Icon::new(icon).size(IconSize::Small).color(Color::Muted),
+                                        Icon::new(icon)
+                                            .size(IconSize::Small)
+                                            .color(IconColor::Monochrome(Color::Muted)),
                                     )
                                 })
                                 .child(EditorElement::new(&self.editor, editor_style)),

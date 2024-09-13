@@ -2,6 +2,8 @@ use gpui::{AnchorCorner, ClickEvent, CursorStyle, MouseButton, View};
 
 use crate::{prelude::*, ContextMenu, PopoverMenu};
 
+use super::IconColor;
+
 #[derive(IntoElement)]
 pub struct DropdownMenu {
     id: ElementId,
@@ -139,11 +141,11 @@ impl RenderOnce for DropdownMenuTrigger {
             .child(
                 Icon::new(IconName::ChevronUpDown)
                     .size(IconSize::XSmall)
-                    .color(if disabled {
+                    .color(IconColor::Monochrome(if disabled {
                         Color::Disabled
                     } else {
                         Color::Muted
-                    }),
+                    })),
             )
             .when_some(self.on_click.filter(|_| !disabled), |el, on_click| {
                 el.on_mouse_down(MouseButton::Left, |_, cx| cx.prevent_default())

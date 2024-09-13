@@ -1,4 +1,4 @@
-use gpui::{svg, AnimationElement, Hsla, IntoElement, Rems, Transformation};
+use gpui::{svg, AnimationElement, Hsla, IntoElement, Rems, SvgColor, Transformation};
 use serde::{Deserialize, Serialize};
 use strum::{EnumIter, EnumString, IntoStaticStr};
 
@@ -40,6 +40,11 @@ impl RenderOnce for AnyIcon {
             Self::AnimatedIcon(animated_icon) => animated_icon.into_any_element(),
         }
     }
+}
+
+pub enum IconColor {
+    Monochrome(Color),
+    Polychrome,
 }
 
 /// The decoration for an icon.
@@ -452,7 +457,7 @@ impl IconName {
 #[derive(IntoElement)]
 pub struct Icon {
     path: SharedString,
-    color: Color,
+    color: IconColor,
     size: Rems,
     transformation: Transformation,
 }
@@ -461,7 +466,7 @@ impl Icon {
     pub fn new(icon: IconName) -> Self {
         Self {
             path: icon.path().into(),
-            color: Color::default(),
+            color: IconColor::Monochrome(Color::Default),
             size: IconSize::default().rems(),
             transformation: Transformation::default(),
         }
@@ -470,13 +475,13 @@ impl Icon {
     pub fn from_path(path: impl Into<SharedString>) -> Self {
         Self {
             path: path.into(),
-            color: Color::default(),
+            color: IconColor::Monochrome(Color::Default),
             size: IconSize::default().rems(),
             transformation: Transformation::default(),
         }
     }
 
-    pub fn color(mut self, color: Color) -> Self {
+    pub fn color(mut self, color: IconColor) -> Self {
         self.color = color;
         self
     }
@@ -502,12 +507,18 @@ impl Icon {
 
 impl RenderOnce for Icon {
     fn render(self, cx: &mut WindowContext) -> impl IntoElement {
-        svg()
+        let svg_element = svg()
             .with_transformation(self.transformation)
             .size(self.size)
             .flex_none()
-            .path(self.path)
-            .text_color(self.color.color(cx))
+            .path(self.path);
+
+        let color = match self.color {
+            IconColor::Monochrome(color) => SvgColor::Monochrome(color.color(cx)),
+            IconColor::Polychrome => SvgColor::Polychrome,
+        };
+
+        svg_element.with_color(color)
     }
 }
 

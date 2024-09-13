@@ -2,7 +2,7 @@ use gpui::Render;
 use story::Story;
 use strum::IntoEnumIterator;
 
-use crate::{prelude::*, DecoratedIcon, IconDecoration};
+use crate::{prelude::*, DecoratedIcon, IconColor, IconDecoration};
 use crate::{Icon, IconName};
 
 pub struct IconStory;
@@ -15,7 +15,7 @@ impl Render for IconStory {
             .child(Story::title_for::<Icon>())
             .child(Story::label("DecoratedIcon"))
             .child(DecoratedIcon::new(
-                Icon::new(IconName::Bell).color(Color::Muted),
+                Icon::new(IconName::Bell).color(IconColor::Monochrome(Color::Muted)),
                 IconDecoration::IndicatorDot,
             ))
             .child(
@@ -23,7 +23,7 @@ impl Render for IconStory {
                     .decoration_color(Color::Accent),
             )
             .child(DecoratedIcon::new(
-                Icon::new(IconName::Bell).color(Color::Muted),
+                Icon::new(IconName::Bell).color(IconColor::Monochrome(Color::Muted)),
                 IconDecoration::Strikethrough,
             ))
             .child(

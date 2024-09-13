@@ -11,6 +11,8 @@ use settings::Settings;
 use std::{rc::Rc, time::Duration};
 use theme::ThemeSettings;
 
+use super::IconColor;
+
 enum ContextMenuItem {
     Separator,
     Header(SharedString),
@@ -407,7 +409,9 @@ impl Render for ContextMenu {
                                             .gap_1()
                                             .child(Label::new(label.clone()).color(color))
                                             .child(
-                                                Icon::new(*icon).size(IconSize::Small).color(color),
+                                                Icon::new(*icon)
+                                                    .size(IconSize::Small)
+                                                    .color(IconColor::Monochrome(color)),
                                             )
                                             .into_any_element()
                                     } else {
@@ -421,7 +425,9 @@ impl Render for ContextMenu {
                                         .when_some(*toggle, |list_item, (position, toggled)| {
                                             let contents = if toggled {
                                                 v_flex().flex_none().child(
-                                                    Icon::new(IconName::Check).color(Color::Accent),
+                                                    Icon::new(IconName::Check).color(
+                                                        IconColor::Monochrome(Color::Accent),
+                                                    ),
                                                 )
                                             } else {
                                                 v_flex()

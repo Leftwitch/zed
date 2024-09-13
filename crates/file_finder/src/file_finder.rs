@@ -26,7 +26,7 @@ use std::{
     },
 };
 use text::Point;
-use ui::{prelude::*, HighlightedLabel, ListItem, ListItemSpacing};
+use ui::{prelude::*, HighlightedLabel, IconColor, ListItem, ListItemSpacing};
 use util::{paths::PathWithPosition, post_inc, ResultExt};
 use workspace::{item::PreviewTabsSettings, ModalView, Workspace};
 
@@ -1048,7 +1048,7 @@ impl PickerDelegate for FileFinderDelegate {
 
         let icon = match &path_match {
             Match::History { .. } => Icon::new(IconName::HistoryRerun)
-                .color(Color::Muted)
+                .color(IconColor::Monochrome(Color::Muted))
                 .size(IconSize::Small)
                 .into_any_element(),
             Match::Search(_) => v_flex()

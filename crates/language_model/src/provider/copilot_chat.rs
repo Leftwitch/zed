@@ -19,8 +19,8 @@ use std::time::Duration;
 use strum::IntoEnumIterator;
 use ui::{
     div, h_flex, v_flex, Button, ButtonCommon, Clickable, Color, Context, FixedWidth, Icon,
-    IconName, IconPosition, IconSize, IntoElement, Label, LabelCommon, ParentElement, Styled,
-    ViewContext, VisualContext, WindowContext,
+    IconColor, IconName, IconPosition, IconSize, IntoElement, Label, LabelCommon, ParentElement,
+    Styled, ViewContext, VisualContext, WindowContext,
 };
 
 use crate::settings::AllLanguageModelSettings;
@@ -313,7 +313,7 @@ impl Render for ConfigurationView {
             const LABEL: &str = "Authorized.";
             h_flex()
                 .gap_1()
-                .child(Icon::new(IconName::Check).color(Color::Success))
+                .child(Icon::new(IconName::Check).color(IconColor::Monochrome(Color::Success)))
                 .child(Label::new(LABEL))
         } else {
             let loading_icon = svg()

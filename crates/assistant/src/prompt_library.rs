@@ -37,8 +37,8 @@ use std::{
 use text::LineEnding;
 use theme::ThemeSettings;
 use ui::{
-    div, prelude::*, IconButtonShape, KeyBinding, ListItem, ListItemSpacing, ParentElement, Render,
-    SharedString, Styled, Tooltip, ViewContext, VisualContext,
+    div, prelude::*, IconButtonShape, IconColor, KeyBinding, ListItem, ListItemSpacing,
+    ParentElement, Render, SharedString, Styled, Tooltip, ViewContext, VisualContext,
 };
 use util::{ResultExt, TryFutureExt};
 use uuid::Uuid;
@@ -251,7 +251,10 @@ impl PickerDelegate for PromptPickerDelegate {
                     .child(if prompt_id.is_built_in() {
                         div()
                             .id("built-in-prompt")
-                            .child(Icon::new(IconName::FileLock).color(Color::Muted))
+                            .child(
+                                Icon::new(IconName::FileLock)
+                                    .color(IconColor::Monochrome(Color::Muted)),
+                            )
                             .tooltip(move |cx| {
                                 Tooltip::with_meta(
                                     "Built-in prompt",
@@ -990,10 +993,9 @@ impl PromptLibrary {
                                                 .child(if prompt_id.is_built_in() {
                                                     div()
                                                         .id("built-in-prompt")
-                                                        .child(
-                                                            Icon::new(IconName::FileLock)
-                                                                .color(Color::Muted),
-                                                        )
+                                                        .child(Icon::new(IconName::FileLock).color(
+                                                            IconColor::Monochrome(Color::Muted),
+                                                        ))
                                                         .tooltip(move |cx| {
                                                             Tooltip::with_meta(
                                                                 "Built-in prompt",
@@ -1129,7 +1131,7 @@ impl Render for PromptLibrary {
                                     .child(
                                         Icon::new(IconName::Book)
                                             .size(IconSize::Medium)
-                                            .color(Color::Muted),
+                                            .color(IconColor::Monochrome(Color::Muted)),
                                     )
                                     .child(
                                         Label::new("No prompts yet")

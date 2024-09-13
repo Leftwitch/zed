@@ -14,7 +14,7 @@ use settings::{Settings, SettingsStore};
 use std::{future, sync::Arc, time::Duration};
 use strum::IntoEnumIterator;
 use theme::ThemeSettings;
-use ui::{prelude::*, Icon, IconName, Tooltip};
+use ui::{prelude::*, Icon, IconColor, IconName, Tooltip};
 use util::ResultExt;
 
 use crate::LanguageModelCompletionEvent;
@@ -497,7 +497,7 @@ impl Render for ConfigurationView {
                 .child(
                     h_flex()
                         .gap_1()
-                        .child(Icon::new(IconName::Check).color(Color::Success))
+                        .child(Icon::new(IconName::Check).color(IconColor::Monochrome(Color::Success)))
                         .child(Label::new(if env_var_set {
                             format!("API key set in {GOOGLE_AI_API_KEY_VAR} environment variable.")
                         } else {

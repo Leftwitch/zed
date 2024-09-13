@@ -1,15 +1,24 @@
 use crate::{
     geometry::Negate as _, point, px, radians, size, Bounds, Element, GlobalElementId, Hitbox,
-    InteractiveElement, Interactivity, IntoElement, LayoutId, Pixels, Point, Radians, SharedString,
-    Size, StyleRefinement, Styled, TransformationMatrix, WindowContext,
+    Hsla, InteractiveElement, Interactivity, IntoElement, LayoutId, Pixels, Point, Radians,
+    SharedString, Size, StyleRefinement, Styled, TransformationMatrix, WindowContext,
 };
 use util::ResultExt;
 
+/// The color of an SVG element.
+pub enum SvgColor {
+    /// Used to make the SVG monochrome using the text color of the SVG.
+    Monochrome(Hsla),
+
+    /// Used if the SVG should keep its color.
+    Polychrome,
+}
 /// An SVG element.
 pub struct Svg {
     interactivity: Interactivity,
     transformation: Option<Transformation>,
     path: Option<SharedString>,
+    color: SvgColor,
 }
 
 /// Create a new SVG element.
@@ -18,6 +27,7 @@ pub fn svg() -> Svg {
         interactivity: Interactivity::default(),
         transformation: None,
         path: None,
+        color: SvgColor::Polychrome,
     }
 }
 
@@ -32,6 +42,12 @@ impl Svg {
     /// Note that this won't effect the hitbox or layout of the element, only the rendering.
     pub fn with_transformation(mut self, transformation: Transformation) -> Self {
         self.transformation = Some(transformation);
+        self
+    }
+
+    /// Set the color of the SVG element.
+    pub fn with_color(mut self, color: SvgColor) -> Self {
+        self.color = color;
         self
     }
 }
@@ -78,7 +94,7 @@ impl Element for Svg {
     {
         self.interactivity
             .paint(global_id, bounds, hitbox.as_ref(), cx, |style, cx| {
-                if let Some((path, color)) = self.path.as_ref().zip(style.text.color) {
+                if let Some(path) = self.path.as_ref() {
                     let transformation = self
                         .transformation
                         .as_ref()
@@ -86,6 +102,11 @@ impl Element for Svg {
                             transformation.into_matrix(bounds.center(), cx.scale_factor())
                         })
                         .unwrap_or_default();
+
+                    let color = match self.color {
+                        SvgColor::Monochrome(color) => Some(color),
+                        SvgColor::Polychrome => None,
+                    };
 
                     cx.paint_svg(bounds, path.clone(), transformation, color)
                         .log_err();

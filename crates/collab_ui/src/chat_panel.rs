@@ -22,8 +22,8 @@ use settings::Settings;
 use std::{sync::Arc, time::Duration};
 use time::{OffsetDateTime, UtcOffset};
 use ui::{
-    prelude::*, Avatar, Button, ContextMenu, IconButton, IconName, KeyBinding, Label, PopoverMenu,
-    TabBar, Tooltip,
+    prelude::*, Avatar, Button, ContextMenu, IconButton, IconColor, IconName, KeyBinding, Label,
+    PopoverMenu, TabBar, Tooltip,
 };
 use util::{ResultExt, TryFutureExt};
 use workspace::{
@@ -316,7 +316,10 @@ impl ChatPanel {
                         .px_0p5()
                         .gap_x_1()
                         .rounded_md()
-                        .child(Icon::new(IconName::ReplyArrowRight).color(Color::Muted))
+                        .child(
+                            Icon::new(IconName::ReplyArrowRight)
+                                .color(IconColor::Monochrome(Color::Muted)),
+                        )
                         .when(reply_to_message.is_none(), |el| {
                             el.child(
                                 Label::new("Message has been deleted...")
@@ -353,7 +356,9 @@ impl ChatPanel {
                 .rounded_md()
                 .overflow_hidden()
                 .hover(|style| style.bg(cx.theme().colors().element_background))
-                .child(Icon::new(IconName::ReplyArrowRight).color(Color::Muted))
+                .child(
+                    Icon::new(IconName::ReplyArrowRight).color(IconColor::Monochrome(Color::Muted)),
+                )
                 .child(Avatar::new(user_being_replied_to.avatar_uri.clone()).size(rems(0.7)))
                 .child(
                     Label::new(format!("@{}", user_being_replied_to.github_login))

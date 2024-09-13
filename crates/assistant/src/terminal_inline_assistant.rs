@@ -28,7 +28,7 @@ use std::{
 use terminal::Terminal;
 use terminal_view::TerminalView;
 use theme::ThemeSettings;
-use ui::{prelude::*, IconButtonShape, Tooltip};
+use ui::{prelude::*, IconButtonShape, IconColor, Tooltip};
 use util::ResultExt;
 use workspace::{notifications::NotificationId, Toast, Workspace};
 
@@ -614,7 +614,7 @@ impl Render for PromptEditor {
                                     .child(
                                         Icon::new(IconName::XCircle)
                                             .size(IconSize::Small)
-                                            .color(Color::Error),
+                                            .color(IconColor::Monochrome(Color::Error)),
                                     ),
                             )
                         } else {

@@ -23,7 +23,7 @@ use std::str::FromStr;
 use std::{sync::Arc, time::Duration};
 use strum::IntoEnumIterator;
 use theme::ThemeSettings;
-use ui::{prelude::*, Icon, IconName, Tooltip};
+use ui::{prelude::*, Icon, IconColor, IconName, Tooltip};
 use util::{maybe, ResultExt};
 
 const PROVIDER_ID: &str = "anthropic";
@@ -707,7 +707,7 @@ impl Render for ConfigurationView {
                 .child(
                     h_flex()
                         .gap_1()
-                        .child(Icon::new(IconName::Check).color(Color::Success))
+                        .child(Icon::new(IconName::Check).color(IconColor::Monochrome(Color::Success)))
                         .child(Label::new(if env_var_set {
                             format!("API key set in {ANTHROPIC_API_KEY_VAR} environment variable.")
                         } else {

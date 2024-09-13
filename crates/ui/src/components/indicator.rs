@@ -1,5 +1,7 @@
 use crate::{prelude::*, AnyIcon};
 
+use super::IconColor;
+
 #[derive(Default)]
 enum IndicatorKind {
     #[default]
@@ -47,8 +49,10 @@ impl RenderOnce for Indicator {
         let container = div().flex_none();
 
         match self.kind {
-            IndicatorKind::Icon(icon) => container
-                .child(icon.map(|icon| icon.custom_size(rems_from_px(8.)).color(self.color))),
+            IndicatorKind::Icon(icon) => container.child(icon.map(|icon| {
+                icon.custom_size(rems_from_px(8.))
+                    .color(IconColor::Monochrome(self.color))
+            })),
             IndicatorKind::Dot => container
                 .w_1p5()
                 .h_1p5()

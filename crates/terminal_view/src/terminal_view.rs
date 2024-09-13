@@ -26,7 +26,7 @@ use terminal::{
 };
 use terminal_element::{is_blank, TerminalElement};
 use terminal_panel::TerminalPanel;
-use ui::{h_flex, prelude::*, ContextMenu, Icon, IconName, Label, Tooltip};
+use ui::{h_flex, prelude::*, ContextMenu, Icon, IconColor, IconName, Label, Tooltip};
 use util::{paths::PathWithPosition, ResultExt};
 use workspace::{
     item::{BreadcrumbText, Item, ItemEvent, SerializableItem, TabContentParams},
@@ -1018,7 +1018,7 @@ impl Item for TerminalView {
                             .when(rerun_button.is_some(), |this| {
                                 this.hover(|style| style.invisible().w_0())
                             })
-                            .child(Icon::new(icon).color(icon_color)),
+                            .child(Icon::new(icon).color(IconColor::Monochrome(icon_color))),
                     )
                     .when_some(rerun_button, |this, rerun_button| {
                         this.child(

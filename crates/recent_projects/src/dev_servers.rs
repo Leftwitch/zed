@@ -33,6 +33,7 @@ use task::RevealStrategy;
 use task::SpawnInTerminal;
 use terminal_view::terminal_panel::TerminalPanel;
 use ui::ElevationIndex;
+use ui::IconColor;
 use ui::Section;
 use ui::{
     prelude::*, Indicator, List, ListHeader, ListItem, Modal, ModalFooter, ModalHeader,
@@ -1080,7 +1081,7 @@ impl DevServerProjects {
     ) -> impl IntoElement {
         ListItem::new("create-remote-project")
             .disabled(true)
-            .start_slot(Icon::new(IconName::FileTree).color(Color::Muted))
+            .start_slot(Icon::new(IconName::FileTree).color(IconColor::Monochrome(Color::Muted)))
             .child(self.project_path_input.clone())
             .child(div().w(IconSize::Medium.rems()).when(creating, |el| {
                 el.child(
@@ -1105,7 +1106,7 @@ impl DevServerProjects {
         let is_online = project_id.is_some();
 
         ListItem::new(("remote-project", dev_server_project_id.0))
-            .start_slot(Icon::new(IconName::FileTree).when(!is_online, |icon| icon.color(Color::Muted)))
+            .start_slot(Icon::new(IconName::FileTree).when(!is_online, |icon| icon.color(IconColor::Monochrome(Color::Muted))))
             .child(
                     Label::new(project.paths.join(", "))
             )

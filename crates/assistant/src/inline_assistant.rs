@@ -50,7 +50,7 @@ use std::{
 };
 use terminal_view::terminal_panel::TerminalPanel;
 use theme::ThemeSettings;
-use ui::{prelude::*, CheckboxWithLabel, IconButtonShape, Popover, Tooltip};
+use ui::{prelude::*, CheckboxWithLabel, IconButtonShape, IconColor, Popover, Tooltip};
 use util::{RangeExt, ResultExt};
 use workspace::{notifications::NotificationId, Toast, Workspace};
 
@@ -1539,7 +1539,7 @@ impl Render for PromptEditor {
                                     .child(
                                         Icon::new(IconName::XCircle)
                                             .size(IconSize::Small)
-                                            .color(Color::Error),
+                                            .color(IconColor::Monochrome(Color::Error)),
                                     ),
                             )
                         }

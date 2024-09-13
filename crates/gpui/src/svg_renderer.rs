@@ -7,6 +7,7 @@ use std::{hash::Hash, sync::Arc};
 pub(crate) struct RenderSvgParams {
     pub(crate) path: SharedString,
     pub(crate) size: Size<DevicePixels>,
+    pub(crate) polychrome: bool,
 }
 
 #[derive(Clone)]
@@ -36,13 +37,20 @@ impl SvgRenderer {
 
         let pixmap = self.render_pixmap(&bytes, SvgSize::Size(params.size))?;
 
-        // Convert the pixmap's pixels into an alpha mask.
-        let alpha_mask = pixmap
-            .pixels()
-            .iter()
-            .map(|p| p.alpha())
-            .collect::<Vec<_>>();
-        Ok(Some(alpha_mask))
+        let result: Vec<u8> = if params.polychrome {
+            pixmap
+                .pixels()
+                .iter()
+                .flat_map(|pixel| {
+                    let pixel = pixel.demultiply();
+                    vec![pixel.blue(), pixel.green(), pixel.red(), pixel.alpha()]
+                })
+                .collect()
+        } else {
+            pixmap.pixels().iter().map(|p| p.alpha()).collect()
+        };
+
+        Ok(Some(result))
     }
 
     pub fn render_pixmap(&self, bytes: &[u8], size: SvgSize) -> Result<Pixmap, usvg::Error> {
