@@ -12,6 +12,7 @@ use crate::{
 };
 use anyhow::Result;
 use collections::{BTreeSet, HashMap, HashSet, VecDeque};
+use file_icons::FileIcons;
 use futures::{stream::FuturesUnordered, StreamExt};
 use git::repository::GitFileStatus;
 use gpui::{
@@ -41,8 +42,9 @@ use std::{
 use theme::ThemeSettings;
 
 use ui::{
-    prelude::*, right_click_menu, ButtonSize, Color, IconButton, IconButtonShape, IconName,
-    IconSize, Indicator, Label, PopoverMenu, PopoverMenuHandle, Tab, TabBar, TabPosition, Tooltip,
+    prelude::*, right_click_menu, ButtonSize, Color, IconButton, IconButtonShape, IconColor,
+    IconName, IconSize, Indicator, Label, PopoverMenu, PopoverMenuHandle, Tab, TabBar, TabPosition,
+    Tooltip,
 };
 use ui::{v_flex, ContextMenu};
 use util::{debug_panic, maybe, truncate_and_remove_front, ResultExt};
@@ -1844,6 +1846,11 @@ impl Pane {
             Self::icon_color(is_active)
         };
 
+        let file_icon = project_path
+            .as_ref()
+            .and_then(|path| self.project.read(cx).entry_for_path(path, cx))
+            .map(|entry| FileIcons::get_icon(entry.path.as_ref(), cx));
+
         let icon = item.tab_icon(cx);
         let close_side = &ItemSettings::get_global(cx).close_position;
         let indicator = render_item_indicator(item.boxed_clone(), cx);
@@ -1852,7 +1859,6 @@ impl Pane {
         let is_last_item = ix == self.items.len() - 1;
         let is_pinned = self.is_tab_pinned(ix);
         let position_relative_to_active_item = ix.cmp(&self.active_item_index);
-
         let tab = Tab::new(ix)
             .position(if is_first_item {
                 TabPosition::First
@@ -1974,7 +1980,14 @@ impl Pane {
                         icon.size(IconSize::Small)
                             .color(ui::IconColor::Monochrome(icon_color))
                     }))
-                    .child(label),
+                    .child(if let Some(Some(file_icon)) = file_icon {
+                        h_flex()
+                            .child(Icon::from_path(file_icon).color(IconColor::Polychrome))
+                            .gap_2()
+                            .child(label)
+                    } else {
+                        h_flex().child(label)
+                    }),
             );
 
         let single_entry_to_resolve = {
